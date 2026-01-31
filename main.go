@@ -14,11 +14,21 @@ import (
 
 // Usage: go run main.go -threads=6 -input=./original -output=./
 
+var lgHeight int
+var mdHeight int
+var smHeight int
+
 func main() {
 	threads := flag.Int("threads", 6, "Number of concurrent photo processors")
 	inputDir := flag.String("input", "./original", "Directory containing photos to process (prefix required like ./)")
 	outputDir := flag.String("output", "./", "Directory to save converted webp images (prefix required like ./)")
+	lg := flag.Int("lgHeight", 1080, "Generate large size images")
+	md := flag.Int("mdHeight", 720, "Generate medium size images")
+	sm := flag.Int("smHeight", 480, "Generate small size images")
 	flag.Parse()
+	lgHeight = *lg
+	mdHeight = *md
+	smHeight = *sm
 	photoChan := getPhotosFromDirectory(*inputDir)
 
 	// Create a semaphore channel
@@ -81,11 +91,11 @@ func convertAndSaveWebP(photoPath, outDir, size string, image image.Image) error
 	// Resize image based on size
 	switch size {
 	case "lg":
-		image = imgconv.Resize(image, &imgconv.ResizeOption{Height: 2000})
+		image = imgconv.Resize(image, &imgconv.ResizeOption{Height: lgHeight})
 	case "md":
-		image = imgconv.Resize(image, &imgconv.ResizeOption{Height: 1000})
+		image = imgconv.Resize(image, &imgconv.ResizeOption{Height: mdHeight})
 	case "sm":
-		image = imgconv.Resize(image, &imgconv.ResizeOption{Height: 400})
+		image = imgconv.Resize(image, &imgconv.ResizeOption{Height: smHeight})
 	}
 
 	imgconv.Write(outFile, image, &imgconv.FormatOption{
