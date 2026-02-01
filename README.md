@@ -36,6 +36,7 @@ A simple Go application to convert images in the `original/` directory to other 
    - `-lgHeight`  : Height in pixels for large images (default: 1080)
    - `-mdHeight`  : Height in pixels for medium images (default: 720)
    - `-smHeight`  : Height in pixels for small images (default: 480)
+   - `-size`      : Size of files generated: lg, md, sm, all (default: all) - in case you want to avoid generating all 3 sizes.
 
 4. **Check the output** directory for converted images.
 

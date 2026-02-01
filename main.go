@@ -17,11 +17,13 @@ import (
 var lgHeight int
 var mdHeight int
 var smHeight int
+var onlySize string
 
 func main() {
 	threads := flag.Int("threads", 6, "Number of concurrent photo processors")
 	inputDir := flag.String("input", "./original", "Directory containing photos to process (prefix required like ./)")
 	outputDir := flag.String("output", "./", "Directory to save converted webp images (prefix required like ./)")
+	size := flag.String("size", "all", "Only generate specific size: lg, md, sm or all")
 	lg := flag.Int("lgHeight", 1080, "Generate large size images")
 	md := flag.Int("mdHeight", 720, "Generate medium size images")
 	sm := flag.Int("smHeight", 480, "Generate small size images")
@@ -29,6 +31,7 @@ func main() {
 	lgHeight = *lg
 	mdHeight = *md
 	smHeight = *sm
+	onlySize = *size
 	photoChan := getPhotosFromDirectory(*inputDir)
 
 	// Create a semaphore channel
@@ -67,6 +70,9 @@ func processPhotoToWebP(photoPath string, output string) error {
 
 	// file sizes lg, md, sm
 	var imageSizes = []string{"lg", "md", "sm"}
+	if onlySize == "lg" || onlySize == "md" || onlySize == "sm" {
+		imageSizes = []string{onlySize}
+	}
 	for _, size := range imageSizes {
 		err := convertAndSaveWebP(photoPath, outDir, size, image)
 		if err != nil {
